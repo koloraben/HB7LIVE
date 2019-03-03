@@ -13,11 +13,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/lb_ic_actions_right_arrow"
+        android:icon="@drawable/banner"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Example.LeanbackLauncher"
-        android:banner="@drawable/lb_ic_actions_right_arrow"
+        android:banner="@drawable/banner"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".MainActivity"
@@ -41,6 +41,11 @@
             android:theme="@style/Theme.Example.Leanback">
         </activity>
 
+        <activity android:name=".playback.SettingsActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Example.LeanbackPreferences">
+        </activity>
+
         <receiver android:name=".StartActivityOnBootReceiver"
             android:enabled="true"
             android:exported="true">
@@ -50,6 +55,18 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
+        <service
+            android:name=".utils.FetchVideoService"
+            android:exported="false" />
+        <provider
+            android:name=".playback.VideoProvider"
+            android:authorities="${packageName}"
+            android:permission="${applicationId}.ACCESS_VIDEO_DATA"
+            android:exported="true">
+            <path-permission
+                android:pathPrefix="/search"
+                android:readPermission="android.permission.GLOBAL_SEARCH" />
+        </provider>
     </application>
 
 </manifest>

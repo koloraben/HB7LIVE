@@ -6,7 +6,8 @@ import android.os.Bundle;
 import com.app.hb7live.R;
 
 public class DetailViewActivity extends Activity {
-
+    public static final String SHARED_ELEMENT_NAME = "HB7";
+    public static final String LIVE = "Live";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

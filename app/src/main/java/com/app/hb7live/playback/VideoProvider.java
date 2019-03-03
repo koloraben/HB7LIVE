@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2016 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.app.hb7live.playback;
 
@@ -68,20 +53,16 @@ public class VideoProvider extends ContentProvider {
                 VideoContract.VideoEntry.COLUMN_DESC,
                 VideoContract.VideoEntry.COLUMN_VIDEO_URL,
                 VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL,
-                VideoContract.VideoEntry.COLUMN_STUDIO,
                 VideoContract.VideoEntry.COLUMN_CARD_IMG,
                 VideoContract.VideoEntry.COLUMN_CONTENT_TYPE,
                 VideoContract.VideoEntry.COLUMN_IS_LIVE,
                 VideoContract.VideoEntry.COLUMN_VIDEO_WIDTH,
                 VideoContract.VideoEntry.COLUMN_VIDEO_HEIGHT,
                 VideoContract.VideoEntry.COLUMN_AUDIO_CHANNEL_CONFIG,
-                VideoContract.VideoEntry.COLUMN_PURCHASE_PRICE,
-                VideoContract.VideoEntry.COLUMN_RENTAL_PRICE,
                 VideoContract.VideoEntry.COLUMN_RATING_STYLE,
                 VideoContract.VideoEntry.COLUMN_RATING_SCORE,
                 VideoContract.VideoEntry.COLUMN_PRODUCTION_YEAR,
                 VideoContract.VideoEntry.COLUMN_DURATION,
-                VideoContract.VideoEntry.COLUMN_ACTION,
                 SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID
         };
     }
@@ -125,7 +106,6 @@ public class VideoProvider extends ContentProvider {
         map.put(VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL,
                 VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL);
         map.put(VideoContract.VideoEntry.COLUMN_CARD_IMG, VideoContract.VideoEntry.COLUMN_CARD_IMG);
-        map.put(VideoContract.VideoEntry.COLUMN_STUDIO, VideoContract.VideoEntry.COLUMN_STUDIO);
         map.put(VideoContract.VideoEntry.COLUMN_CONTENT_TYPE,
                 VideoContract.VideoEntry.COLUMN_CONTENT_TYPE);
         map.put(VideoContract.VideoEntry.COLUMN_IS_LIVE, VideoContract.VideoEntry.COLUMN_IS_LIVE);
@@ -135,10 +115,6 @@ public class VideoProvider extends ContentProvider {
                 VideoContract.VideoEntry.COLUMN_VIDEO_HEIGHT);
         map.put(VideoContract.VideoEntry.COLUMN_AUDIO_CHANNEL_CONFIG,
                 VideoContract.VideoEntry.COLUMN_AUDIO_CHANNEL_CONFIG);
-        map.put(VideoContract.VideoEntry.COLUMN_PURCHASE_PRICE,
-                VideoContract.VideoEntry.COLUMN_PURCHASE_PRICE);
-        map.put(VideoContract.VideoEntry.COLUMN_RENTAL_PRICE,
-                VideoContract.VideoEntry.COLUMN_RENTAL_PRICE);
         map.put(VideoContract.VideoEntry.COLUMN_RATING_STYLE,
                 VideoContract.VideoEntry.COLUMN_RATING_STYLE);
         map.put(VideoContract.VideoEntry.COLUMN_RATING_SCORE,
@@ -146,7 +122,6 @@ public class VideoProvider extends ContentProvider {
         map.put(VideoContract.VideoEntry.COLUMN_PRODUCTION_YEAR,
                 VideoContract.VideoEntry.COLUMN_PRODUCTION_YEAR);
         map.put(VideoContract.VideoEntry.COLUMN_DURATION, VideoContract.VideoEntry.COLUMN_DURATION);
-        map.put(VideoContract.VideoEntry.COLUMN_ACTION, VideoContract.VideoEntry.COLUMN_ACTION);
         map.put(SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID, VideoContract.VideoEntry._ID + " AS " +
                 SearchManager.SUGGEST_COLUMN_INTENT_DATA_ID);
         map.put(SearchManager.SUGGEST_COLUMN_SHORTCUT_ID,
@@ -156,7 +131,7 @@ public class VideoProvider extends ContentProvider {
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
+            String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case SEARCH_SUGGEST: {
@@ -238,9 +213,9 @@ public class VideoProvider extends ContentProvider {
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         final int rowsDeleted;
 
-        if (selection == null) {
+        /*if (selection == null) {
             throw new UnsupportedOperationException("Cannot delete without selection specified.");
-        }
+        }*/
 
         switch (sUriMatcher.match(uri)) {
             case VIDEO: {
@@ -262,7 +237,7 @@ public class VideoProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
+            String[] selectionArgs) {
         final int rowsUpdated;
 
         switch (sUriMatcher.match(uri)) {

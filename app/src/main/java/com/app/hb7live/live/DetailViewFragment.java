@@ -1,6 +1,7 @@
 package com.app.hb7live.live;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +14,7 @@ import android.support.v17.leanback.widget.DetailsOverviewRow;
 import android.support.v17.leanback.widget.FullWidthDetailsOverviewRowPresenter;
 import android.support.v17.leanback.widget.FullWidthDetailsOverviewSharedElementHelper;
 import android.support.v17.leanback.widget.HeaderItem;
+import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
 import android.support.v17.leanback.widget.OnItemViewClickedListener;
@@ -20,6 +22,7 @@ import android.support.v17.leanback.widget.OnItemViewSelectedListener;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -28,10 +31,14 @@ import com.app.hb7live.R;
 import com.app.hb7live.cards.presenters.CardPresenterSelector;
 import com.app.hb7live.cards.presenters.DetailsDescriptionPresenter;
 import com.app.hb7live.models.Card;
-import com.app.hb7live.models.DetailedCard;
 import com.app.hb7live.playback.PlaybackActivity;
+import com.app.hb7live.playback.Video;
 import com.app.hb7live.utils.CardListRow;
 import com.app.hb7live.utils.Utils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.gson.Gson;
 
 public class DetailViewFragment extends DetailsFragment implements OnItemViewClickedListener,
@@ -40,11 +47,12 @@ public class DetailViewFragment extends DetailsFragment implements OnItemViewCli
     public static final String TRANSITION_NAME = "t_for_transition";
     public static final String EXTRA_CARD = "card";
 
-    private static final long ACTION_BUY = 1;
+    private static final long ACTION_WATCH = 1;
     private static final long ACTION_WISHLIST = 2;
-    private static final long ACTION_RELATED = 3;
+    //private static final long ACTION_RELATED = 3;
+    private Video mSelectedVideo;
 
-    private Action mActionBuy;
+    private Action mActionWatch;
     private Action mActionWishList;
     private Action mActionRelated;
     private ArrayObjectAdapter mRowsAdapter;
@@ -54,19 +62,15 @@ public class DetailViewFragment extends DetailsFragment implements OnItemViewCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mSelectedVideo = (Video) getActivity().getIntent()
+                .getParcelableExtra(DetailViewActivity.LIVE);
+
         setupUi();
         setupEventListeners();
     }
 
     private void setupUi() {
-        // Load the card we want to display from a JSON resource. This JSON data could come from
-        // anywhere in a real world app, e.g. a server.
-        String json = Utils
-                .inputStreamToString(getResources().openRawResource(R.raw.detail_example));
-        DetailedCard data = new Gson().fromJson(json, DetailedCard.class);
 
-        // Setup fragment
-        setTitle(getString(R.string.detail_view_title));
 
         FullWidthDetailsOverviewRowPresenter rowPresenter = new FullWidthDetailsOverviewRowPresenter(
                 new DetailsDescriptionPresenter(getActivity())) {
@@ -100,44 +104,54 @@ public class DetailViewFragment extends DetailsFragment implements OnItemViewCli
         // Setup PresenterSelector to distinguish between the different rows.
         ClassPresenterSelector rowPresenterSelector = new ClassPresenterSelector();
         rowPresenterSelector.addClassPresenter(DetailsOverviewRow.class, rowPresenter);
-        rowPresenterSelector.addClassPresenter(CardListRow.class, shadowDisabledRowPresenter);
+        //rowPresenterSelector.addClassPresenter(CardListRow.class, shadowDisabledRowPresenter);
         rowPresenterSelector.addClassPresenter(ListRow.class, new ListRowPresenter());
         mRowsAdapter = new ArrayObjectAdapter(rowPresenterSelector);
 
         // Setup action and detail row.
-        DetailsOverviewRow detailsOverview = new DetailsOverviewRow(data);
-        int imageResId = data.getLocalImageResourceId(getActivity());
+        DetailsOverviewRow detailsOverview = new DetailsOverviewRow(mSelectedVideo);
 
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null && extras.containsKey(EXTRA_CARD)) {
-            imageResId = extras.getInt(EXTRA_CARD, imageResId);
-        }
-        detailsOverview.setImageDrawable(getResources().getDrawable(R.drawable.background_canyon, null));
+        RequestOptions options = new RequestOptions()
+                .error(R.drawable.background_canyon)
+                .dontAnimate();
+
+        Glide.with(this)
+                .asBitmap()
+                .load(mSelectedVideo.cardImageUrl)
+                .apply(options)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(
+                            Bitmap resource,
+                            Transition<? super Bitmap> transition) {
+                        detailsOverview.setImageBitmap(getActivity(), resource);
+                        startEntranceTransition();
+                    }
+                });
         ArrayObjectAdapter actionAdapter = new ArrayObjectAdapter();
 
-        mActionBuy = new Action(ACTION_BUY, getString(R.string.action_buy) + data.getPrice());
-        mActionWishList = new Action(ACTION_WISHLIST, getString(R.string.action_wishlist));
-        mActionRelated = new Action(ACTION_RELATED, getString(R.string.action_related));
+        mActionWatch = new Action(ACTION_WATCH, getString(R.string.action_watch));
+        //mActionWishList = new Action(ACTION_WISHLIST, getString(R.string.action_wishlist));
+        //mActionRelated = new Action(ACTION_RELATED, getString(R.string.action_related));
 
-        actionAdapter.add(mActionBuy);
-        actionAdapter.add(mActionWishList);
-        actionAdapter.add(mActionRelated);
+        actionAdapter.add(mActionWatch);
+        //actionAdapter.add(mActionWishList);
+        //actionAdapter.add(mActionRelated);
         detailsOverview.setActionsAdapter(actionAdapter);
         mRowsAdapter.add(detailsOverview);
 
-        // Setup related row.
-        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(
-                new CardPresenterSelector(getActivity()));
-        for (Card characterCard : data.getCharacters()) listRowAdapter.add(characterCard);
+     /*     // Setup related row.
+        ArrayObjectAdapter listRowAdapter = new ArrayObjectAdapter(new CardPresenterSelector(getActivity()));
+     for (Video characterCard : data.getCharacters()) listRowAdapter.add(characterCard);
         HeaderItem header = new HeaderItem(0, getString(R.string.header_related));
         mRowsAdapter.add(new CardListRow(header, listRowAdapter, null));
 
         // Setup recommended row.
         listRowAdapter = new ArrayObjectAdapter(new CardPresenterSelector(getActivity()));
-        for (Card card : data.getRecommended()) listRowAdapter.add(card);
-        header = new HeaderItem(1, getString(R.string.header_recommended));
+        //for (Video card : data.getRecommended()) listRowAdapter.add(card);
+        HeaderItem header = new HeaderItem(1, getString(R.string.header_recommended));
         mRowsAdapter.add(new ListRow(header, listRowAdapter));
-
+*/
         setAdapter(mRowsAdapter);
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -145,13 +159,29 @@ public class DetailViewFragment extends DetailsFragment implements OnItemViewCli
                 startEntranceTransition();
             }
         }, 500);
-        initializeBackground(data);
+        initializeBackground();
     }
 
-    private void initializeBackground(DetailedCard data) {
+    private void initializeBackground() {
         mDetailsBackground.enableParallax();
-        mDetailsBackground.setCoverBitmap(BitmapFactory.decodeResource(getResources(),
-                R.drawable.background_canyon));
+
+        RequestOptions options = new RequestOptions()
+                .error(R.drawable.background_canyon)
+                .dontAnimate();
+
+        Glide.with(this)
+                .asBitmap()
+                .load(mSelectedVideo.bgImageUrl)
+                .apply(options)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(
+                            Bitmap resource,
+                            Transition<? super Bitmap> transition) {
+                        mDetailsBackground.setCoverBitmap(resource);
+                        startEntranceTransition();
+                    }
+                });
     }
 
     private void setupEventListeners() {
@@ -162,16 +192,28 @@ public class DetailViewFragment extends DetailsFragment implements OnItemViewCli
     @Override
     public void onItemClicked(Presenter.ViewHolder itemViewHolder, Object item,
                               RowPresenter.ViewHolder rowViewHolder, Row row) {
-        if (!(item instanceof Action)) return;
-        Action action = (Action) item;
+        if (item instanceof Action){
+            Action action = (Action) item;
 
-        if (action.getId() == ACTION_RELATED) {
+
+       /* if (action.getId() == ACTION_RELATED) {
             setSelectedPosition(1);
-        }
-        if(action.getId() == ACTION_BUY){
-            Intent intent = new Intent(getActivity().getBaseContext(), PlaybackActivity.class);
+        }*/
+        if(action.getId() == ACTION_WATCH){
+            Intent intent = new Intent(getActivity(), PlaybackActivity.class);
+            intent.putExtra(DetailViewActivity.LIVE, mSelectedVideo);
             startActivity(intent);
         }
+        if(item instanceof Video){
+            Intent intent = new Intent(getActivity().getBaseContext(),
+                    DetailViewActivity.class);
+            intent.putExtra(DetailViewActivity.LIVE,(Video) item);
+            Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                    ((ImageCardView) itemViewHolder.view).getMainImageView(),
+                    DetailViewActivity.SHARED_ELEMENT_NAME)
+                    .toBundle();
+            startActivity(intent, bundle);
+        }}
     }
 
     @Override

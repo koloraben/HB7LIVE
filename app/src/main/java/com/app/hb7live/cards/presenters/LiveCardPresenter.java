@@ -51,7 +51,7 @@ public class LiveCardPresenter extends Presenter {
 
         ImageCardView cardView = (ImageCardView) viewHolder.view;
         cardView.setTitleText(video.title);
-        cardView.setContentText(video.studio);
+        //cardView.setContentText(video.studio);
 
         if (video.cardImageUrl != null) {
             // Set card size from dimension resources.

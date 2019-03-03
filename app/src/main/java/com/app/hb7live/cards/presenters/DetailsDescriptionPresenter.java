@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.hb7live.R;
-import com.app.hb7live.models.DetailedCard;
+import com.app.hb7live.playback.Video;
 import com.app.hb7live.utils.ResourceCache;
 
 import javax.inject.Inject;
@@ -45,15 +45,15 @@ public class DetailsDescriptionPresenter extends Presenter {
 
     @Override public void onBindViewHolder(ViewHolder viewHolder, Object item) {
         TextView primaryText = mResourceCache.getViewById(viewHolder.view, R.id.primary_text);
-        TextView sndText1 = mResourceCache.getViewById(viewHolder.view, R.id.secondary_text_first);
-        TextView sndText2 = mResourceCache.getViewById(viewHolder.view, R.id.secondary_text_second);
+        //TextView sndText1 = mResourceCache.getViewById(viewHolder.view, R.id.secondary_text_first);
+       // TextView sndText2 = mResourceCache.getViewById(viewHolder.view, R.id.secondary_text_second);
         TextView extraText = mResourceCache.getViewById(viewHolder.view, R.id.extra_text);
 
-        DetailedCard card = (DetailedCard) item;
-        primaryText.setText(card.getTitle());
-        sndText1.setText(card.getDescription());
-        sndText2.setText(card.getYear() + "");
-        extraText.setText(card.getText());
+        Video card = (Video) item;
+        primaryText.setText(card.title);
+        extraText.setText(card.description);
+        //sndText2.setText(card.getYear() + "");
+        // extraText.setText(card.getText());
     }
 
     @Override public void onUnbindViewHolder(ViewHolder viewHolder) {

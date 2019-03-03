@@ -37,6 +37,7 @@ import com.google.android.exoplayer2.video.VideoRendererEventListener;
 
 public class PlaybackActivity extends FragmentActivity  {
 
+    public static final String SHARED_ELEMENT_NAME = "play";
     private static final float GAMEPAD_TRIGGER_INTENSITY_ON = 0.5f;
     // Off-condition slightly smaller for button debouncing.
     private static final float GAMEPAD_TRIGGER_INTENSITY_OFF = 0.45f;

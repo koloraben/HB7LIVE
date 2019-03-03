@@ -1,20 +1,5 @@
 package com.app.hb7live.playback;
 
-/*
- * Copyright (C) 2017 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 
 import android.annotation.TargetApi;
@@ -36,14 +21,17 @@ import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.ListRow;
 import android.support.v17.leanback.widget.ListRowPresenter;
 import android.support.v17.leanback.widget.OnItemViewClickedListener;
+import android.support.v17.leanback.widget.PlaybackControlsRow;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.app.hb7live.R;
-import com.app.hb7live.cards.presenters.LiveCardPresenter;
+import com.app.hb7live.cards.presenters.CardPresenterSelector;
+import com.app.hb7live.live.DetailViewActivity;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -90,16 +78,8 @@ public class PlaybackFragment extends VideoFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mVideo = new Video.VideoBuilder()
-                .id(1)
-                .description("Jon introduces Instant Upload with a few thoughts on how we remember the things that matter. Check out some ways we've been rethinking real-life sharing for the web at plus.google.com")
-                .title("Instant Upload")
-                .studio("issam studio")
-                .cardImageUrl("https://storage.googleapis.com/android-tv/Sample%20videos/Google%2B/Google%2B_%20Instant%20Upload/card.jpg")
-                .bgImageUrl("https://storage.googleapis.com/android-tv/Sample%20videos/Google%2B/Google%2B_%20Instant%20Upload/bg.jpg")
-                .videoUrl("rtmp://5.196.74.69/LiveApp/hb7television")
-                .category("cat1")
-                .build();
+        mVideo = (Video) getActivity().getIntent()
+                .getParcelableExtra(DetailViewActivity.LIVE);
         mPlaylist = new Playlist();
 
         mVideoLoaderCallbacks = new VideoLoaderCallbacks(mPlaylist);
@@ -134,9 +114,9 @@ public class PlaybackFragment extends VideoFragment {
     @Override
     public void onPause() {
         super.onPause();
-
+        Toast.makeText(getContext(), "pause called!", Toast.LENGTH_SHORT).show();
         if (mPlayerGlue != null && mPlayerGlue.isPlaying()) {
-            mPlayerGlue.pause();
+           // mPlayerGlue.pause();
         }
         if (Util.SDK_INT <= 23) {
             releasePlayer();
@@ -146,6 +126,7 @@ public class PlaybackFragment extends VideoFragment {
     @Override
     public void onStop() {
         super.onStop();
+        Toast.makeText(getContext(), "stop called!", Toast.LENGTH_SHORT).show();
         if (Util.SDK_INT > 23) {
             releasePlayer();
         }
@@ -187,9 +168,7 @@ public class PlaybackFragment extends VideoFragment {
         prepareMediaForPlaying(Uri.parse(video.videoUrl));
         mPlayerGlue.play();
     }
-    private List<StreamKey> getOfflineStreamKeys(Uri uri) {
-        return getOfflineStreamKeys(uri);
-    }
+
     private void prepareMediaForPlaying(Uri mediaSourceUri) {
         /*MediaSource mediaSource =
                 new ExtractorMediaSource(
@@ -308,7 +287,7 @@ public class PlaybackFragment extends VideoFragment {
     }
 
     private CursorObjectAdapter setupRelatedVideosCursor() {
-        CursorObjectAdapter videoCursorAdapter = new CursorObjectAdapter(new LiveCardPresenter());
+        CursorObjectAdapter videoCursorAdapter = new CursorObjectAdapter(new CardPresenterSelector(getContext()));
         videoCursorAdapter.setMapper(new VideoCursorMapper());
 
         Bundle args = new Bundle();
@@ -316,22 +295,6 @@ public class PlaybackFragment extends VideoFragment {
         getLoaderManager().initLoader(VideoLoaderCallbacks.RELATED_VIDEOS_LOADER, args, mVideoLoaderCallbacks);
 
         return videoCursorAdapter;
-    }
-
-    public void skipToNext() {
-        mPlayerGlue.next();
-    }
-
-    public void skipToPrevious() {
-        mPlayerGlue.previous();
-    }
-
-    public void rewind() {
-        mPlayerGlue.rewind();
-    }
-
-    public void fastForward() {
-        mPlayerGlue.fastForward();
     }
 
     /** Opens the video details page when a related video has been clicked. */
@@ -342,7 +305,22 @@ public class PlaybackFragment extends VideoFragment {
                 Object item,
                 RowPresenter.ViewHolder rowViewHolder,
                 Row row) {
+            if(item instanceof Video){
 
+                Intent intent = new Intent(getActivity().getBaseContext(),
+                        DetailViewActivity.class);
+                intent.putExtra(DetailViewActivity.LIVE,(Video) item);
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
+                        ((ImageCardView) itemViewHolder.view).getMainImageView(),
+                        DetailViewActivity.SHARED_ELEMENT_NAME)
+                        .toBundle();
+                startActivity(intent, bundle);
+                mPlayerGlue.pause();
+            }
+            if(item instanceof PlaybackControlsRow.MoreActions){
+                Intent intent = new Intent(getContext(),SettingsActivity.class);
+                getContext().startActivity(intent);
+            }
 
         }
     }
@@ -380,10 +358,12 @@ public class PlaybackFragment extends VideoFragment {
                 return;
             }
             int id = loader.getId();
+            Video video = (Video) mVideoCursorMapper.convert(cursor);
+            //Log.e("viiiidd",video.title);
             if (id == QUEUE_VIDEOS_LOADER) {
                 playlist.clear();
                 do {
-                    Video video = (Video) mVideoCursorMapper.convert(cursor);
+                     video = (Video) mVideoCursorMapper.convert(cursor);
 
                     // Set the current position to the selected video.
                     if (video.id == mVideo.id) {
