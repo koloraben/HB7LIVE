@@ -20,7 +20,7 @@ public class LiveCardPresenter extends Presenter {
     public ViewHolder onCreateViewHolder(ViewGroup parent) {
         mDefaultBackgroundColor =-50030;
         mSelectedBackgroundColor =-50036;
-        mDefaultCardImage = parent.getResources().getDrawable(R.drawable.face_06, null);
+        mDefaultCardImage = parent.getResources().getDrawable(R.drawable.ic_launcher, null);
 
         ImageCardView cardView = new ImageCardView(parent.getContext()) {
             @Override

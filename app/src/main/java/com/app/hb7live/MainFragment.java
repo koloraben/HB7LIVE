@@ -91,7 +91,7 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
         //setBadgeDrawable(getResources().getDrawable(R.drawable.title_android_tv, null));
         setHeadersState(HEADERS_DISABLED);
         setHeadersTransitionOnBackEnabled(true);
-        setBrandColor(getResources().getColor(R.color.fastlane_background));
+        //setBrandColor(getResources().getColor(R.color.fastlane_background));
     }
 
     private void setupEventListeners() {
