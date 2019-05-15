@@ -99,7 +99,7 @@ public class SettingsFragment extends LeanbackSettingsFragment implements Dialog
                     "prefs_date_time_use_timezone", "app_banner_sample_app", "pref_force_stop",
                     "pref_uninstall", "pref_more_info"};
             if (Arrays.asList(keys).contains(preference.getKey())) {
-                Toast.makeText(getActivity(), "Implement your own action handler.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Implement your own action handler.", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return super.onPreferenceTreeClick(preference);

@@ -52,6 +52,7 @@ public class VideoProvider extends ContentProvider {
                 VideoContract.VideoEntry.COLUMN_CATEGORY,
                 VideoContract.VideoEntry.COLUMN_DESC,
                 VideoContract.VideoEntry.COLUMN_VIDEO_URL,
+                VideoContract.VideoEntry.COLUMN_STUDIO,
                 VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL,
                 VideoContract.VideoEntry.COLUMN_CARD_IMG,
                 VideoContract.VideoEntry.COLUMN_CONTENT_TYPE,
@@ -103,6 +104,8 @@ public class VideoProvider extends ContentProvider {
         map.put(VideoContract.VideoEntry.COLUMN_CATEGORY, VideoContract.VideoEntry.COLUMN_CATEGORY);
         map.put(VideoContract.VideoEntry.COLUMN_VIDEO_URL,
                 VideoContract.VideoEntry.COLUMN_VIDEO_URL);
+        map.put(VideoContract.VideoEntry.COLUMN_STUDIO,
+                VideoContract.VideoEntry.COLUMN_STUDIO);
         map.put(VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL,
                 VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL);
         map.put(VideoContract.VideoEntry.COLUMN_CARD_IMG, VideoContract.VideoEntry.COLUMN_CARD_IMG);
@@ -131,7 +134,7 @@ public class VideoProvider extends ContentProvider {
 
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
-            String[] selectionArgs, String sortOrder) {
+                        String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
             case SEARCH_SUGGEST: {
@@ -237,7 +240,7 @@ public class VideoProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection,
-            String[] selectionArgs) {
+                      String[] selectionArgs) {
         final int rowsUpdated;
 
         switch (sUriMatcher.match(uri)) {

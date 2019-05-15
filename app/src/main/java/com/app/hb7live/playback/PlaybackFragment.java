@@ -44,6 +44,9 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.source.smoothstreaming.manifest.StreamKey;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -54,6 +57,7 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import java.util.List;
@@ -81,7 +85,7 @@ public class PlaybackFragment extends VideoFragment {
         mVideo = (Video) getActivity().getIntent()
                 .getParcelableExtra(DetailViewActivity.LIVE);
         mPlaylist = new Playlist();
-
+        Log.e("thhhhhhhhhhhhhh ::",mVideo.studio);
         mVideoLoaderCallbacks = new VideoLoaderCallbacks(mPlaylist);
 
         // Loads the playlist.
@@ -114,7 +118,7 @@ public class PlaybackFragment extends VideoFragment {
     @Override
     public void onPause() {
         super.onPause();
-        Toast.makeText(getContext(), "pause called!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "pause called!", Toast.LENGTH_SHORT).show();
         if (mPlayerGlue != null && mPlayerGlue.isPlaying()) {
            // mPlayerGlue.pause();
         }
@@ -126,7 +130,7 @@ public class PlaybackFragment extends VideoFragment {
     @Override
     public void onStop() {
         super.onStop();
-        Toast.makeText(getContext(), "stop called!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), "stop called!", Toast.LENGTH_SHORT).show();
         if (Util.SDK_INT > 23) {
             releasePlayer();
         }
@@ -166,10 +170,12 @@ public class PlaybackFragment extends VideoFragment {
         mPlayerGlue.setTitle(video.title);
         mPlayerGlue.setSubtitle(video.description);
         prepareMediaForPlaying(Uri.parse(video.videoUrl));
+        //prepareMediaForPlaying(Uri.parse("http://xxultraxx.com:80/admin_833746/C5OqgYwX/26807"));
         mPlayerGlue.play();
     }
 
     private void prepareMediaForPlaying(Uri mediaSourceUri) {
+        MediaSource mediaSource=null;
         /*MediaSource mediaSource =
                 new ExtractorMediaSource(
                         mediaSourceUri,
@@ -177,14 +183,23 @@ public class PlaybackFragment extends VideoFragment {
                         new DefaultExtractorsFactory(),
                         null,
                         null);*/
-        Log.e("f", "mediaSourceUri.getHost ;; "+mediaSourceUri.getHost());
-        DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(getActivity(), Util.getUserAgent(getActivity(), "VideoPlayerGlue"), new DefaultBandwidthMeter());
-        //MediaSource mediaSource = new HlsMediaSource(mediaSourceUri, dataSourceFactory, 100000, null, null);
-        RtmpDataSourceFactory rtmpDataSourceFactory = new RtmpDataSourceFactory();
+        Log.e("f", "mediaSourceUri.getHost ;; "+mediaSourceUri.getScheme());
+        if(mediaSourceUri.getScheme().equals("rtmp")){
 
-        MediaSource mediaSource =  new ExtractorMediaSource.Factory(rtmpDataSourceFactory)
-                //.setPlaylistParserFactory(new DefaultHlsPlaylistParserFactory())
-                .createMediaSource(mediaSourceUri);
+             mediaSource =  new ExtractorMediaSource.Factory(new RtmpDataSourceFactory())
+                    .createMediaSource(mediaSourceUri);
+        }
+        else if(mediaSourceUri.getLastPathSegment().contains("m3u8")) {
+            mediaSource = new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab"))
+                    .createMediaSource(mediaSourceUri);
+        }
+        else {
+            Log.e("ffffffff","dddddddddddddddddd");
+           mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(),"exoplayer-codelab"))
+                   .createMediaSource(mediaSourceUri);
+        }
+
+
         final LoopingMediaSource loopingSource = new LoopingMediaSource(mediaSource);
 
         mPlayer.prepare(mediaSource);

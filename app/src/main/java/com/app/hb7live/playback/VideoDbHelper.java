@@ -29,7 +29,8 @@ public class VideoDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_VIDEO_TABLE = "CREATE TABLE " + VideoEntry.TABLE_NAME + " (" +
                 VideoContract.VideoEntry._ID + " INTEGER PRIMARY KEY," +
                 VideoEntry.COLUMN_CATEGORY + " TEXT NOT NULL, " +
-                VideoEntry.COLUMN_VIDEO_URL + " TEXT UNIQUE NOT NULL, " + // Make the URL unique.
+                VideoEntry.COLUMN_VIDEO_URL + " TEXT UNIQUE NOT NULL, " +
+                VideoEntry.COLUMN_STUDIO + " TEXT UNIQUE NOT NULL, " +
                 VideoEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 VideoEntry.COLUMN_DESC + " TEXT NOT NULL, " +
                 VideoEntry.COLUMN_BG_IMAGE_URL + " TEXT NOT NULL, " +

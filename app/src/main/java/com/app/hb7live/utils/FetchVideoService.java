@@ -21,63 +21,46 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.IntentService;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.util.Log;
+
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.List;
+
 /**
  * FetchVideoService is responsible for fetching the videos from the Internet and inserting the
  * results into a local SQLite database.
  */
-public class FetchVideoService  extends Service {
+public class FetchVideoService extends IntentService {
+  private static final String TAG = "FetchVideoService";
 
-    public Context context = this;
-    public Handler handler = null;
-    public static Runnable runnable = null;
-    private static final String TAG = "FetchVideoService";
+  /**
+   * Creates an IntentService with a default name for the worker thread.
+   */
+  public FetchVideoService() {
+    super(TAG);
+  }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
+  @Override
+  protected void onHandleIntent(Intent workIntent) {
+    VideoDbBuilder builder = new VideoDbBuilder(getApplicationContext());
+
+    try {
+      List<ContentValues> contentValuesList =
+              builder.fetch(getResources().getString(R.string.catalog_url));
+      ContentValues[] downloadedVideoContentValues =
+              contentValuesList.toArray(new ContentValues[contentValuesList.size()]);
+      getApplicationContext().getContentResolver().bulkInsert(VideoContract.VideoEntry.CONTENT_URI,
+              downloadedVideoContentValues);
+      Log.i(TAG, "done downloading videos");
+    } catch (IOException | JSONException e) {
+      Log.e(TAG, "Error occurred in downloading videos");
+      e.printStackTrace();
     }
-
-    @Override
-    public void onCreate() {
-        //Toast.makeText(this, "Service created!", Toast.LENGTH_LONG).show();
-        requestServer();
-
-        handler = new Handler();
-        runnable = new Runnable() {
-            public void run() {
-                requestServer();
-                handler.postDelayed(runnable, 86400000);
-            }
-        };
-
-        handler.postDelayed(runnable, 86400000);
-    }
-
-    @Override
-    public void onDestroy() {
-        /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
-        //handler.removeCallbacks(runnable);
-       // Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show();
-    }
-
-    private void requestServer(){
-        //VideoDbHelper helper = new VideoDbHelper(getApplicationContext());
-        //helper.deleteAllPostsAndUsers();
-        getApplicationContext().getContentResolver().delete(VideoContract.VideoEntry.CONTENT_URI,
-                null,new String[]{});
-        VideoDbBuilder builder = new VideoDbBuilder(getApplicationContext());
-        try {
-            List<ContentValues> contentValuesList =
-                    builder.fetch(getResources().getString(R.string.catalog_url));
-            ContentValues[] downloadedVideoContentValues =
-                    contentValuesList.toArray(new ContentValues[contentValuesList.size()]);
-            //context.deleteDatabase(VideoDbHelper.DATABASE_NAME);
-            getApplicationContext().getContentResolver().bulkInsert(VideoContract.VideoEntry.CONTENT_URI,
-                    downloadedVideoContentValues);
-            Log.i(TAG, " downloading videos");
-        } catch (IOException | JSONException e) {
-            Log.e(TAG, "Error occurred in downloading videos");
-            e.printStackTrace();
-        }
-    }
+  }
 }

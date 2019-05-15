@@ -18,8 +18,8 @@ public class StartActivityOnBootReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
 
             Video video = new Video.VideoBuilder()
-                    .title("issam tv")
-                    .description("e cinéma et les séries TV")
+                    .title("HB7")
+                    .description("")
                     .category("live")
                     .cardImageUrl("https://storage.googleapis.com/android-tv/Sample%20videos/Google%2B/Google%2B_%20Instant%20Upload/card.jpg")
                     .bgImageUrl("https://storage.googleapis.com/android-tv/Sample%20videos/Google%2B/Google%2B_%20Instant%20Upload/bg.jpg")

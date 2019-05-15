@@ -67,7 +67,7 @@ public class VideoPlayerGlue extends PlaybackTransportControlGlue<LeanbackPlayer
     @Override
     protected void onCreatePrimaryActions(ArrayObjectAdapter adapter) {
         super.onCreatePrimaryActions(adapter);
-        adapter.add(moreActionsProgram);
+        //adapter.add(moreActionsProgram);
     }
 
     @Override

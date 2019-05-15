@@ -69,7 +69,7 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-       // setupData();
+        setupData();
         setupUIElements();
         setupRowAdapter();
         setupEventListeners();
@@ -87,7 +87,7 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
 
 
     private void setupUIElements() {
-        setTitle(getString(R.string.browse_title));
+        setTitle("");
         //setBadgeDrawable(getResources().getDrawable(R.drawable.title_android_tv, null));
         setHeadersState(HEADERS_DISABLED);
         setHeadersTransitionOnBackEnabled(true);
@@ -122,7 +122,7 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
                     null, // Projection to return - null means return all fields
                     VideoContract.VideoEntry.COLUMN_CATEGORY + " = ?", // Selection clause
                     new String[]{category},  // Select based on the category id.
-                    null // Default sort order
+                    "studio ASC" // Default sort order
             );
         }
     }
@@ -158,6 +158,7 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
                         mVideoCursorAdapters.put(videoLoaderId, videoCursorAdapter);
 
                         ListRow row = new ListRow(videoCursorAdapter);
+
                         mRowsAdapter.add(row);
 
                         // Start loading the videos from the database for a particular category.
@@ -182,7 +183,7 @@ public class MainFragment extends BrowseFragment implements LoaderManager.Loader
             }
         } else {
             // Start an Intent to fetch the videos.
-            setupData();
+           // setupData();
         }
     }
 
