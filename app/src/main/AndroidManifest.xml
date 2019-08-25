@@ -4,7 +4,7 @@
     tools:ignore="MissingLeanbackLauncher">
 
     <uses-feature
-        android:name="android.software.leanback"
+        android:name="android.socftware.leanback"
         android:required="false" />
     <uses-feature
         android:name="android.hardware.touchscreen"

@@ -1,5 +1,4 @@
 
-
 package com.app.hb7live.cards.presenters;
 
 import android.content.Context;
@@ -8,11 +7,9 @@ import android.graphics.drawable.Drawable;
 import android.support.v17.leanback.widget.ImageCardView;
 import android.support.v17.leanback.widget.Presenter;
 import android.support.v4.content.ContextCompat;
-import android.view.ContextThemeWrapper;
 import android.view.ViewGroup;
 
 import com.app.hb7live.R;
-import com.app.hb7live.models.Card;
 import com.app.hb7live.playback.Video;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;

@@ -1,7 +1,6 @@
 package com.app.hb7live.playback;
 
 
-
 import android.annotation.TargetApi;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -27,7 +26,6 @@ import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.app.hb7live.R;
 import com.app.hb7live.cards.presenters.CardPresenterSelector;
@@ -44,28 +42,22 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.source.smoothstreaming.manifest.StreamKey;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import java.util.List;
-
 
 public class PlaybackFragment extends VideoFragment {
 
-    private static final int UPDATE_DELAY = 16;
+    private static final int UPDATE_DELAY = 1;
 
     private VideoPlayerGlue mPlayerGlue;
     private LeanbackPlayerAdapter mPlayerAdapter;
@@ -85,7 +77,6 @@ public class PlaybackFragment extends VideoFragment {
         mVideo = (Video) getActivity().getIntent()
                 .getParcelableExtra(DetailViewActivity.LIVE);
         mPlaylist = new Playlist();
-        Log.e("thhhhhhhhhhhhhh ::",mVideo.studio);
         mVideoLoaderCallbacks = new VideoLoaderCallbacks(mPlaylist);
 
         // Loads the playlist.
@@ -113,14 +104,16 @@ public class PlaybackFragment extends VideoFragment {
         }
     }
 
-    /** Pauses the player. */
+    /**
+     * Pauses the player.
+     */
     @TargetApi(Build.VERSION_CODES.N)
     @Override
     public void onPause() {
         super.onPause();
         //Toast.makeText(getContext(), "pause called!", Toast.LENGTH_SHORT).show();
         if (mPlayerGlue != null && mPlayerGlue.isPlaying()) {
-           // mPlayerGlue.pause();
+            // mPlayerGlue.pause();
         }
         if (Util.SDK_INT <= 23) {
             releasePlayer();
@@ -168,14 +161,14 @@ public class PlaybackFragment extends VideoFragment {
 
     private void play(Video video) {
         mPlayerGlue.setTitle(video.title);
-        mPlayerGlue.setSubtitle(video.description);
+        //mPlayerGlue.setSubtitle(video.description);
         prepareMediaForPlaying(Uri.parse(video.videoUrl));
         //prepareMediaForPlaying(Uri.parse("http://xxultraxx.com:80/admin_833746/C5OqgYwX/26807"));
         mPlayerGlue.play();
     }
 
     private void prepareMediaForPlaying(Uri mediaSourceUri) {
-        MediaSource mediaSource=null;
+        MediaSource mediaSource = null;
         /*MediaSource mediaSource =
                 new ExtractorMediaSource(
                         mediaSourceUri,
@@ -183,20 +176,17 @@ public class PlaybackFragment extends VideoFragment {
                         new DefaultExtractorsFactory(),
                         null,
                         null);*/
-        Log.e("f", "mediaSourceUri.getHost ;; "+mediaSourceUri.getScheme());
-        if(mediaSourceUri.getScheme().equals("rtmp")){
-
-             mediaSource =  new ExtractorMediaSource.Factory(new RtmpDataSourceFactory())
+        Log.e("f", "mediaSourceUri.getHost ;; " + mediaSourceUri.getScheme());
+        if (mediaSourceUri.getScheme().equals("rtmp")) {
+            Log.e("f", "rtmp extractor ;; ");
+            mediaSource = new ExtractorMediaSource.Factory(new RtmpDataSourceFactory())
                     .createMediaSource(mediaSourceUri);
-        }
-        else if(mediaSourceUri.getLastPathSegment().contains("m3u8")) {
+        } else if (mediaSourceUri.getLastPathSegment().contains("m3u8")) {
             mediaSource = new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab"))
                     .createMediaSource(mediaSourceUri);
-        }
-        else {
-            Log.e("ffffffff","dddddddddddddddddd");
-           mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(),"exoplayer-codelab"))
-                   .createMediaSource(mediaSourceUri);
+        } else {
+            mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(), "exoplayer-codelab"))
+                    .createMediaSource(mediaSourceUri);
         }
 
 
@@ -208,29 +198,46 @@ public class PlaybackFragment extends VideoFragment {
 
             @Override
             public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+                Log.v(TAG, "Listener-onTracksChanged... " + timeline);
 
             }
 
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-                //Log.v(TAG, "Listener-onTracksChanged... "+trackSelections.get(0).blacklist(0,0L));
+                // Log.v(TAG, "Listener-onTracksChanged... "+trackSelections.get(0).blacklist(0,0L));
             }
 
             @Override
             public void onLoadingChanged(boolean isLoading) {
-
+                Log.v(TAG, "Listener-onLoadingChanged..." + isLoading);
+                if (isLoading == false) {
+                    Log.v(TAG, "onLoadingChanged ////////////////////");
+                    mPlayer.stop();
+                    mPlayer.prepare(loopingSource);
+                    mPlayer.setPlayWhenReady(true);
+                }
             }
 
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-                Log.v(TAG, "Listener-onPlayerStateChanged..." + playbackState+"|||isDrawingCacheEnabled():");
+                Log.v(TAG, "Listener-onPlayerStateChanged..." + playbackState + "|||isDrawingCacheEnabled():");
+                if (playbackState == 4) {
+                    Log.v(TAG, "playback is at 4 ////////////////////");
+                    mPlayer.stop();
+                    mPlayer.prepare(loopingSource);
+                    mPlayer.setPlayWhenReady(true);
+                }
             }
 
             @Override
-            public void onRepeatModeChanged(int repeatMode) { }
+            public void onRepeatModeChanged(int repeatMode) {
+                Log.v(TAG, "Listener-onLoadingChanged..." + repeatMode);
+            }
 
             @Override
-            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) { }
+            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+                Log.v(TAG, "Listener-onShuffleModeEnabledChanged..." + shuffleModeEnabled);
+            }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
@@ -255,22 +262,29 @@ public class PlaybackFragment extends VideoFragment {
                         mPlayer.setPlayWhenReady(true);
                         Log.e(TAG, "TYPE_UNEXPECTED: " + error.getUnexpectedException().getMessage());
                         break;
+                    default:
+                        mPlayer.stop();
+                        mPlayer.prepare(loopingSource);
+                        mPlayer.setPlayWhenReady(true);
+                        Log.e(TAG, "UNKNOWN ERROR: " + error.getUnexpectedException().getMessage());
+                        break;
                 }
 
             }
+
             @Override
             public void onPositionDiscontinuity(int reason) {
-
+                Log.v(TAG, "Listener-onPositionDiscontinuity..." + reason);
             }
 
             @Override
             public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
+                Log.v(TAG, "Listener-onPlaybackParametersChanged..." + playbackParameters.speed);
             }
 
             @Override
             public void onSeekProcessed() {
-
+                Log.v(TAG, "Listener-onLoadingChanged...");
             }
         });
     }
@@ -312,7 +326,9 @@ public class PlaybackFragment extends VideoFragment {
         return videoCursorAdapter;
     }
 
-    /** Opens the video details page when a related video has been clicked. */
+    /**
+     * Opens the video details page when a related video has been clicked.
+     */
     private final class ItemViewClickedListener implements OnItemViewClickedListener {
         @Override
         public void onItemClicked(
@@ -320,11 +336,11 @@ public class PlaybackFragment extends VideoFragment {
                 Object item,
                 RowPresenter.ViewHolder rowViewHolder,
                 Row row) {
-            if(item instanceof Video){
+            if (item instanceof Video) {
 
                 Intent intent = new Intent(getActivity().getBaseContext(),
                         DetailViewActivity.class);
-                intent.putExtra(DetailViewActivity.LIVE,(Video) item);
+                intent.putExtra(DetailViewActivity.LIVE, (Video) item);
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                         ((ImageCardView) itemViewHolder.view).getMainImageView(),
                         DetailViewActivity.SHARED_ELEMENT_NAME)
@@ -332,15 +348,17 @@ public class PlaybackFragment extends VideoFragment {
                 startActivity(intent, bundle);
                 mPlayerGlue.pause();
             }
-            if(item instanceof PlaybackControlsRow.MoreActions){
-                Intent intent = new Intent(getContext(),SettingsActivity.class);
-                getContext().startActivity(intent);
+            if (item instanceof PlaybackControlsRow.MoreActions) {
+                //Intent intent = new Intent(getContext(),SettingsActivity.class);
+                //getContext().startActivity(intent);
             }
 
         }
     }
 
-    /** Loads a playlist with videos from a cursor and also updates the related videos cursor. */
+    /**
+     * Loads a playlist with videos from a cursor and also updates the related videos cursor.
+     */
     protected class VideoLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
         static final int RELATED_VIDEOS_LOADER = 1;
@@ -363,7 +381,7 @@ public class PlaybackFragment extends VideoFragment {
                     VideoContract.VideoEntry.CONTENT_URI,
                     null,
                     VideoContract.VideoEntry.COLUMN_CATEGORY + " = ?",
-                    new String[] {category},
+                    new String[]{category},
                     null);
         }
 
@@ -378,7 +396,7 @@ public class PlaybackFragment extends VideoFragment {
             if (id == QUEUE_VIDEOS_LOADER) {
                 playlist.clear();
                 do {
-                     video = (Video) mVideoCursorMapper.convert(cursor);
+                    video = (Video) mVideoCursorMapper.convert(cursor);
 
                     // Set the current position to the selected video.
                     if (video.id == mVideo.id) {

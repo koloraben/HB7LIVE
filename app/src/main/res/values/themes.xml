@@ -12,6 +12,7 @@
         <item name="android:windowBackground">@drawable/bg_living_room_wide</item>
         <item name="browseTitleViewLayout">@layout/titleview</item>
         <item name="browseRowsMarginTop">275dp</item>
+        <item name="android:imageButtonStyle">@drawable/logohb7</item>
     </style>
 
 

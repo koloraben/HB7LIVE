@@ -4,6 +4,7 @@ package com.app.hb7live.playback;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v17.leanback.media.PlaybackBannerControlGlue;
 import android.support.v17.leanback.media.PlaybackTransportControlGlue;
 import android.support.v17.leanback.widget.Action;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
@@ -13,7 +14,10 @@ import android.widget.Toast;
 import com.app.hb7live.R;
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * Manages customizing the actions in the {@link PlaybackControlsRow}. Adds and manages the
@@ -55,19 +59,21 @@ public class VideoPlayerGlue extends PlaybackTransportControlGlue<LeanbackPlayer
             LeanbackPlayerAdapter playerAdapter,
             OnActionClickedListener actionListener) {
         super(context, playerAdapter);
+        GifDrawable gifFromResource = null;
+        try {
+             gifFromResource = new GifDrawable( getContext().getResources(), R.drawable.lv );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        OnActionClickedListener mActionListener = actionListener;
         moreActionsProgram = new PlaybackControlsRow.MoreActions(context);
-        moreActionsProgram.setIcon(getContext().getResources().getDrawable(R.drawable.menu_playback, null));
-
-
-
+        moreActionsProgram.setIcon(gifFromResource);
     }
 
     @Override
     protected void onCreatePrimaryActions(ArrayObjectAdapter adapter) {
         super.onCreatePrimaryActions(adapter);
-        //adapter.add(moreActionsProgram);
+        adapter.add(moreActionsProgram);
     }
 
     @Override
@@ -78,7 +84,6 @@ public class VideoPlayerGlue extends PlaybackTransportControlGlue<LeanbackPlayer
     @Override
     public void onActionClicked(Action action) {
        
-        // Super class handles play/pause and delegates to abstract methods next()/previous().
         super.onActionClicked(action);
 
 
