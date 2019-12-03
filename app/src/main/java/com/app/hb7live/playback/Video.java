@@ -15,7 +15,7 @@ public final class Video implements Parcelable {
   public final String bgImageUrl;
   public final String cardImageUrl;
   public final String videoUrl;
-  public final String studio;
+  public final Integer studio;
 
   private Video(
           final long id,
@@ -25,7 +25,7 @@ public final class Video implements Parcelable {
           final String videoUrl,
           final String bgImageUrl,
           final String cardImageUrl,
-          final String studio
+          final Integer studio
   ) {
     this.id = id;
     this.category = category;
@@ -45,7 +45,7 @@ public final class Video implements Parcelable {
     bgImageUrl = in.readString();
     cardImageUrl = in.readString();
     videoUrl = in.readString();
-    studio = in.readString();
+    studio = in.readInt();
   }
 
   public static final Creator<Video> CREATOR = new Creator<Video>() {
@@ -78,7 +78,7 @@ public final class Video implements Parcelable {
     dest.writeString(bgImageUrl);
     dest.writeString(cardImageUrl);
     dest.writeString(videoUrl);
-    dest.writeString(studio);
+    dest.writeInt(studio);
   }
 
   @Override
@@ -104,7 +104,7 @@ public final class Video implements Parcelable {
     private String bgImageUrl;
     private String cardImageUrl;
     private String videoUrl;
-    private String studio;
+    private Integer studio;
 
     public VideoBuilder id(long id) {
       this.id = id;
@@ -141,7 +141,7 @@ public final class Video implements Parcelable {
       return this;
     }
 
-    public VideoBuilder studio(String order) {
+    public VideoBuilder studio(Integer order) {
       this.studio = order;
       return this;
     }

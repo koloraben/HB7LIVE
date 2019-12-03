@@ -1,8 +1,13 @@
 
 package com.app.hb7live.playback;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * Manages a playlist of videos.

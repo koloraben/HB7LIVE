@@ -92,7 +92,7 @@ public class VideoProvider extends ContentProvider {
                 new String[]{"%" + query + "%", "%" + query + "%"},
                 null,
                 null,
-                null
+                "studio ASC"
         );
     }
 
@@ -153,7 +153,7 @@ public class VideoProvider extends ContentProvider {
                         selectionArgs,
                         null,
                         null,
-                        sortOrder
+                        "studio ASC"
                 );
                 break;
             }

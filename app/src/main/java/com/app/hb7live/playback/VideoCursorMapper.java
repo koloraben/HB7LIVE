@@ -43,7 +43,7 @@ public final class VideoCursorMapper extends CursorMapper {
         String videoUrl = cursor.getString(videoUrlIndex);
         String bgImageUrl = cursor.getString(bgImageUrlIndex);
         String cardImageUrl = cursor.getString(cardImageUrlIndex);
-        String order = cursor.getString(studioIndex);
+        Integer order = cursor.getInt(studioIndex);
 
         // Build a Video object to be processed.
         return new Video.VideoBuilder()

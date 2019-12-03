@@ -2,6 +2,7 @@ package com.app.hb7live;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -19,5 +20,11 @@ public class MainActivity extends Activity {
             getFragmentManager().beginTransaction().replace(R.id.fragmentContainer, fragment)
                     .commit();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+        finish();
+        moveTaskToBack(true);
     }
 }

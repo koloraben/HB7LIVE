@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v17.leanback.app.VideoFragment;
 import android.support.v17.leanback.app.VideoFragmentGlueHost;
 import android.support.v17.leanback.widget.ArrayObjectAdapter;
@@ -382,9 +383,10 @@ public class PlaybackFragment extends VideoFragment {
                     null,
                     VideoContract.VideoEntry.COLUMN_CATEGORY + " = ?",
                     new String[]{category},
-                    null);
+                    "studio ASC");
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
             if (cursor == null || !cursor.moveToFirst()) {
