@@ -27,6 +27,9 @@ import android.support.v17.leanback.widget.Row;
 import android.support.v17.leanback.widget.RowPresenter;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.util.Log;
+import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.app.hb7live.R;
 import com.app.hb7live.cards.presenters.CardPresenterSelector;
@@ -54,6 +57,8 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+
+import static com.google.android.exoplayer2.C.VIDEO_SCALING_MODE_SCALE_TO_FIT;
 
 
 public class PlaybackFragment extends VideoFragment {
@@ -130,6 +135,16 @@ public class PlaybackFragment extends VideoFragment {
         }
     }
 
+    @Override
+    protected void onVideoSizeChanged(int width, int height) {
+                View rootView = getView();
+                SurfaceView surfaceView = getSurfaceView();
+                ViewGroup.LayoutParams params = surfaceView.getLayoutParams();
+                params.height = rootView.getHeight();
+                params.width = rootView.getWidth();
+                surfaceView.setLayoutParams(params);
+
+    }
     private void initializePlayer() {
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory =
@@ -177,7 +192,7 @@ public class PlaybackFragment extends VideoFragment {
                         new DefaultExtractorsFactory(),
                         null,
                         null);*/
-        Log.e("f", "mediaSourceUri.getHost ;; " + mediaSourceUri.getScheme());
+        Log.e("f", "mediaSourceUri.getHost ;; " + mediaSourceUri);
         if (mediaSourceUri.getScheme().equals("rtmp")) {
             Log.e("f", "rtmp extractor ;; ");
             mediaSource = new ExtractorMediaSource.Factory(new RtmpDataSourceFactory())
@@ -194,6 +209,7 @@ public class PlaybackFragment extends VideoFragment {
         final LoopingMediaSource loopingSource = new LoopingMediaSource(mediaSource);
 
         mPlayer.prepare(mediaSource);
+        mPlayer.setVideoScalingMode(VIDEO_SCALING_MODE_SCALE_TO_FIT);
         mPlayer.addListener(new Player.EventListener() {
 
 
@@ -244,29 +260,21 @@ public class PlaybackFragment extends VideoFragment {
             public void onPlayerError(ExoPlaybackException error) {
                 switch (error.type) {
                     case ExoPlaybackException.TYPE_SOURCE:
-                        mPlayer.stop();
-                        mPlayer.prepare(loopingSource);
-                        mPlayer.setPlayWhenReady(true);
+                        reloadPlayer(loopingSource);
                         Log.e(TAG, "TYPE_SOURCE: " + error.getSourceException().getMessage());
                         break;
 
                     case ExoPlaybackException.TYPE_RENDERER:
-                        mPlayer.stop();
-                        mPlayer.prepare(loopingSource);
-                        mPlayer.setPlayWhenReady(true);
+                        reloadPlayer(loopingSource);
                         Log.e(TAG, "TYPE_RENDERER: " + error.getRendererException().getMessage());
                         break;
 
                     case ExoPlaybackException.TYPE_UNEXPECTED:
-                        mPlayer.stop();
-                        mPlayer.prepare(loopingSource);
-                        mPlayer.setPlayWhenReady(true);
+                        reloadPlayer(loopingSource);
                         Log.e(TAG, "TYPE_UNEXPECTED: " + error.getUnexpectedException().getMessage());
                         break;
                     default:
-                        mPlayer.stop();
-                        mPlayer.prepare(loopingSource);
-                        mPlayer.setPlayWhenReady(true);
+                        reloadPlayer(loopingSource);
                         Log.e(TAG, "UNKNOWN ERROR: " + error.getUnexpectedException().getMessage());
                         break;
                 }
@@ -288,6 +296,13 @@ public class PlaybackFragment extends VideoFragment {
                 Log.v(TAG, "Listener-onLoadingChanged...");
             }
         });
+    }
+
+    private void reloadPlayer(LoopingMediaSource loopingSource){
+        mPlayer.stop();
+        mPlayer.prepare(loopingSource);
+        mPlayer.setPlayWhenReady(true);
+        mPlayer.setVideoScalingMode(VIDEO_SCALING_MODE_SCALE_TO_FIT);
     }
 
     private ArrayObjectAdapter initializeRelatedVideosRow() {
