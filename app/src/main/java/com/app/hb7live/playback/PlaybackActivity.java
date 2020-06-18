@@ -3,6 +3,7 @@ package com.app.hb7live.playback;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.WindowManager;
 
 import com.app.hb7live.R;
 
@@ -19,6 +20,7 @@ public class PlaybackActivity extends FragmentActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playback);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         Fragment fragment =
                 getFragmentManager().findFragmentByTag("playback_tag");
         if (fragment instanceof PlaybackFragment) {

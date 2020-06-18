@@ -3,6 +3,7 @@ package com.app.hb7live.live;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowManager;
 
 import com.app.hb7live.MainActivity;
 import com.app.hb7live.R;
@@ -15,7 +16,7 @@ public class DetailViewActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_detail_example);
-
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     if (savedInstanceState == null) {
       DetailViewFragment fragment = new DetailViewFragment();
       getFragmentManager().beginTransaction()
