@@ -83,10 +83,10 @@ public class VideoPlayerGlue extends PlaybackTransportControlGlue<LeanbackPlayer
 
     @Override
     public void onActionClicked(Action action) {
-       
+
         super.onActionClicked(action);
 
 
     }
-    
+
 }

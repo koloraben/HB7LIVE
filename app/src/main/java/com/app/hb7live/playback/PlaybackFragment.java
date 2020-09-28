@@ -42,6 +42,8 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.ext.leanback.LeanbackPlayerAdapter;
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
@@ -59,6 +61,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
 import static com.google.android.exoplayer2.C.VIDEO_SCALING_MODE_SCALE_TO_FIT;
+import static com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES;
 
 
 public class PlaybackFragment extends VideoFragment {
@@ -201,7 +204,8 @@ public class PlaybackFragment extends VideoFragment {
             mediaSource = new HlsMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab"))
                     .createMediaSource(mediaSourceUri);
         } else {
-            mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(getContext(), "exoplayer-codelab"))
+            DefaultExtractorsFactory extractorFactory = new DefaultExtractorsFactory().setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_DETECT_ACCESS_UNITS).setTsExtractorFlags(FLAG_ALLOW_NON_IDR_KEYFRAMES);
+            mediaSource = new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("exoplayer-codelab") ).setExtractorsFactory(extractorFactory)
                     .createMediaSource(mediaSourceUri);
         }
 
