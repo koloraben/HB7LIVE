@@ -12,7 +12,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 
@@ -52,6 +53,7 @@ public class VideoProvider extends ContentProvider {
                 VideoContract.VideoEntry.COLUMN_CATEGORY,
                 VideoContract.VideoEntry.COLUMN_DESC,
                 VideoContract.VideoEntry.COLUMN_VIDEO_URL,
+                VideoContract.VideoEntry.COLUMN_CURRENT_PROG,
                 VideoContract.VideoEntry.COLUMN_STUDIO,
                 VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL,
                 VideoContract.VideoEntry.COLUMN_CARD_IMG,
@@ -104,6 +106,8 @@ public class VideoProvider extends ContentProvider {
         map.put(VideoContract.VideoEntry.COLUMN_CATEGORY, VideoContract.VideoEntry.COLUMN_CATEGORY);
         map.put(VideoContract.VideoEntry.COLUMN_VIDEO_URL,
                 VideoContract.VideoEntry.COLUMN_VIDEO_URL);
+        map.put(VideoContract.VideoEntry.COLUMN_CURRENT_PROG,
+                VideoContract.VideoEntry.COLUMN_CURRENT_PROG);
         map.put(VideoContract.VideoEntry.COLUMN_STUDIO,
                 VideoContract.VideoEntry.COLUMN_STUDIO);
         map.put(VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL,

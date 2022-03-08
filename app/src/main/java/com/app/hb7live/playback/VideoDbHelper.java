@@ -14,7 +14,7 @@ import com.app.hb7live.playback.VideoContract.VideoEntry;
 public class VideoDbHelper extends SQLiteOpenHelper {
 
     // Change this when you change the database schema.
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // The name of our database.
     public static final String DATABASE_NAME = "hb7tv.db";
@@ -30,6 +30,7 @@ public class VideoDbHelper extends SQLiteOpenHelper {
                 VideoContract.VideoEntry._ID + " INTEGER PRIMARY KEY," +
                 VideoEntry.COLUMN_CATEGORY + " TEXT NOT NULL, " +
                 VideoEntry.COLUMN_VIDEO_URL + " TEXT UNIQUE NOT NULL, " +
+                VideoEntry.COLUMN_CURRENT_PROG + " TEXT , " +
                 VideoEntry.COLUMN_STUDIO + " INTEGER UNIQUE NOT NULL, " +
                 VideoEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 VideoEntry.COLUMN_DESC + " TEXT NOT NULL, " +

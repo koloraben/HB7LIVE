@@ -19,7 +19,7 @@
             later.</string>
     <string name="action_watch">Regarder</string>
     <string name="action_rent">Rent </string>
-    <string name="catalog_url">http://188.165.194.82:8001/api/channelslive</string>
+    <string name="catalog_url">http://5.50.32.76:8001/api/channelslive</string>
 
     <string name="livedata_action_play">Play</string>
     <string name="livedata_actoin_rent">Rent</string>

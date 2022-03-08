@@ -4,8 +4,9 @@ package com.app.hb7live.playback;
 import android.content.ContentValues;
 import android.content.Context;
 import android.media.Rating;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +28,7 @@ public class VideoDbBuilder {
     public static final String TAG_GOOGLE_VIDEOS = "hb7livetv";
     public static final String TAG_CATEGORY = "category";
     public static final String TAG_SOURCES = "sources";
+    public static final String TAG_CURRENT_PROG = "currentProg";
     public static final String TAG_DESCRIPTION = "description";
     public static final String TAG_CARD_THUMB = "card";
     public static final String TAG_BACKGROUND = "background";
@@ -83,6 +85,7 @@ public class VideoDbBuilder {
                 String title = video.optString(TAG_TITLE);
                 String description = video.optString(TAG_DESCRIPTION);
                 String videoUrl = video.optString(TAG_SOURCES); // Get the first video only.
+                String currentProg = video.optString(TAG_CURRENT_PROG);
                 String bgImageUrl = video.optString(TAG_BACKGROUND);
                 String cardImageUrl = video.optString(TAG_CARD_THUMB);
                 int studio = video.optInt(TAG_STUDIO);
@@ -92,6 +95,7 @@ public class VideoDbBuilder {
                 videoValues.put(VideoContract.VideoEntry.COLUMN_NAME, title);
                 videoValues.put(VideoContract.VideoEntry.COLUMN_DESC, description);
                 videoValues.put(VideoContract.VideoEntry.COLUMN_VIDEO_URL, videoUrl);
+                videoValues.put(VideoContract.VideoEntry.COLUMN_CURRENT_PROG, currentProg);
                 videoValues.put(VideoContract.VideoEntry.COLUMN_CARD_IMG, cardImageUrl);
                 videoValues.put(VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL, bgImageUrl);
                 videoValues.put(VideoContract.VideoEntry.COLUMN_STUDIO, studio);

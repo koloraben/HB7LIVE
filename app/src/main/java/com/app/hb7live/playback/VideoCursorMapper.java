@@ -3,8 +3,8 @@
 package com.app.hb7live.playback;
 
 import android.database.Cursor;
-import android.support.v17.leanback.database.CursorMapper;
-import android.util.Log;
+
+import androidx.leanback.database.CursorMapper;
 
 /**
  * VideoCursorMapper maps a database Cursor to a Video object.
@@ -15,6 +15,7 @@ public final class VideoCursorMapper extends CursorMapper {
     private static int nameIndex;
     private static int descIndex;
     private static int videoUrlIndex;
+    private static int currentProgIndex;
     private static int bgImageUrlIndex;
     private static int cardImageUrlIndex;
     private static int categoryIndex;
@@ -26,6 +27,7 @@ public final class VideoCursorMapper extends CursorMapper {
         nameIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_NAME);
         descIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_DESC);
         videoUrlIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_VIDEO_URL);
+        currentProgIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_CURRENT_PROG);
         bgImageUrlIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_BG_IMAGE_URL);
         cardImageUrlIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_CARD_IMG);
         categoryIndex = cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_CATEGORY);
@@ -41,6 +43,7 @@ public final class VideoCursorMapper extends CursorMapper {
         String title = cursor.getString(nameIndex);
         String desc = cursor.getString(descIndex);
         String videoUrl = cursor.getString(videoUrlIndex);
+        String currentProg = cursor.getString(currentProgIndex);
         String bgImageUrl = cursor.getString(bgImageUrlIndex);
         String cardImageUrl = cursor.getString(cardImageUrlIndex);
         Integer order = cursor.getInt(studioIndex);
@@ -55,6 +58,7 @@ public final class VideoCursorMapper extends CursorMapper {
                 .bgImageUrl(bgImageUrl)
                 .cardImageUrl(cardImageUrl)
                 .studio(order)
+                .currentProg(currentProg)
                 .build();
     }
 }

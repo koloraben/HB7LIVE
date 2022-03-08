@@ -15,6 +15,7 @@ public final class Video implements Parcelable {
   public final String bgImageUrl;
   public final String cardImageUrl;
   public final String videoUrl;
+  public final String currentProg;
   public final Integer studio;
 
   private Video(
@@ -25,6 +26,7 @@ public final class Video implements Parcelable {
           final String videoUrl,
           final String bgImageUrl,
           final String cardImageUrl,
+          final String currentProg,
           final Integer studio
   ) {
     this.id = id;
@@ -34,6 +36,7 @@ public final class Video implements Parcelable {
     this.videoUrl = videoUrl;
     this.bgImageUrl = bgImageUrl;
     this.cardImageUrl = cardImageUrl;
+    this.currentProg = currentProg;
     this.studio = studio;
   }
 
@@ -45,6 +48,7 @@ public final class Video implements Parcelable {
     bgImageUrl = in.readString();
     cardImageUrl = in.readString();
     videoUrl = in.readString();
+    currentProg = in.readString();
     studio = in.readInt();
   }
 
@@ -78,6 +82,7 @@ public final class Video implements Parcelable {
     dest.writeString(bgImageUrl);
     dest.writeString(cardImageUrl);
     dest.writeString(videoUrl);
+    dest.writeString(currentProg);
     dest.writeInt(studio);
   }
 
@@ -90,6 +95,7 @@ public final class Video implements Parcelable {
     s += ", videoUrl='" + videoUrl + "'";
     s += ", bgImageUrl='" + bgImageUrl + "'";
     s += ", cardImageUrl='" + cardImageUrl + "'";
+    s += ", currentProg='" + currentProg + "'";
     s += ", order='" + studio + "'";
     s += "}";
     return s;
@@ -104,6 +110,7 @@ public final class Video implements Parcelable {
     private String bgImageUrl;
     private String cardImageUrl;
     private String videoUrl;
+    private String currentProg;
     private Integer studio;
 
     public VideoBuilder id(long id) {
@@ -123,6 +130,11 @@ public final class Video implements Parcelable {
 
     public VideoBuilder description(String desc) {
       this.desc = desc;
+      return this;
+    }
+
+    public VideoBuilder currentProg(String currentProg) {
+      this.currentProg = currentProg;
       return this;
     }
 
@@ -156,6 +168,7 @@ public final class Video implements Parcelable {
               videoUrl,
               bgImageUrl,
               cardImageUrl,
+              currentProg,
               studio
       );
     }

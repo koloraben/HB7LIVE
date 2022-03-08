@@ -2,12 +2,9 @@
 package com.app.hb7live.cards.presenters;
 
 import android.content.Context;
-import android.support.v17.leanback.widget.Presenter;
-import android.support.v17.leanback.widget.PresenterSelector;
 
-import android.content.Context;
-import android.support.v17.leanback.widget.Presenter;
-import android.support.v17.leanback.widget.PresenterSelector;
+import androidx.leanback.widget.Presenter;
+import androidx.leanback.widget.PresenterSelector;
 
 import com.app.hb7live.R;
 import com.app.hb7live.models.Card;

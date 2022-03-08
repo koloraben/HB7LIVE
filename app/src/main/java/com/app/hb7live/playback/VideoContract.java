@@ -43,6 +43,7 @@ public final class VideoContract {
 
         // The url to the video content.
         public static final String COLUMN_VIDEO_URL = "video_url";
+        public static final String COLUMN_CURRENT_PROG = "current_prog";
 
         // The url to the background image.
         public static final String COLUMN_BG_IMAGE_URL = "bg_image_url";

@@ -17,13 +17,14 @@ package com.app.hb7live.playback;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v14.preference.PreferenceFragment;
-import android.support.v17.preference.LeanbackPreferenceFragment;
-import android.support.v17.preference.LeanbackSettingsFragment;
-import android.support.v7.preference.DialogPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
+
+import androidx.leanback.preference.LeanbackPreferenceFragment;
+import androidx.leanback.preference.LeanbackSettingsFragment;
+import androidx.preference.DialogPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragment;
+import androidx.preference.PreferenceScreen;
 
 import com.app.hb7live.R;
 
@@ -87,7 +88,7 @@ public class SettingsFragment extends LeanbackSettingsFragment implements Dialog
             preferenceScreen.addPreference(preference);
 
             Preference preference2 = new Preference(preferenceScreen.getContext());
-            preference2.setTitle("22:10 <-> 00:02 | the land of magic");
+            preference2.setTitle("22:10 <-> 00:02 | the land of magic the land of magic the land of magic the land of magic the land of magic the land of magic the land of magic");
             // do anything you want with the preferencey here
             preferenceScreen.addPreference(preference2);
 

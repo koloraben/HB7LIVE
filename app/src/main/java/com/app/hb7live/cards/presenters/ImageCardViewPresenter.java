@@ -1,24 +1,22 @@
 
 package com.app.hb7live.cards.presenters;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.support.v17.leanback.widget.ImageCardView;
-import android.support.v17.leanback.widget.Presenter;
-import android.support.v4.content.ContextCompat;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.leanback.widget.ImageCardView;
+import androidx.leanback.widget.Presenter;
 
 import com.app.hb7live.R;
 import com.app.hb7live.playback.Video;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-/**
- * A very basic {@link ImageCardView} {@link android.support.v17.leanback.widget.Presenter}.You can
- * pass a custom style for the ImageCardView in the constructor. Use the default constructor to
- * create a Presenter with a default ImageCardView style.
- */
 public class ImageCardViewPresenter extends Presenter {
 
     private int mSelectedBackgroundColor = -1;
@@ -41,6 +39,24 @@ public class ImageCardViewPresenter extends Presenter {
             }
         };
 
+        cardView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, final boolean isFocused) {
+                final View infoField = view.findViewById(R.id.info_field);
+                final TextView contentField = (TextView)view.findViewById(R.id.content_text);
+                final TextView titleField = (TextView)view.findViewById(R.id.title_text);
+                final Drawable mainImage = ((ImageView)view.findViewById(R.id.main_image)).getDrawable();
+
+                if (isFocused) {
+                    ((TextView)cardView.findViewById(R.id.content_text)).setMaxLines(Integer.MAX_VALUE);
+
+                }
+                else {
+                    ((TextView)cardView.findViewById(R.id.content_text)).setMaxLines(1);
+                }
+            }
+        });
+
         cardView.setFocusable(true);
         cardView.setFocusableInTouchMode(true);
         updateCardBackgroundColor(cardView, false);
@@ -62,6 +78,10 @@ public class ImageCardViewPresenter extends Presenter {
 
         ImageCardView cardView = (ImageCardView) viewHolder.view;
         cardView.setTitleText(video.title);
+        ((TextView) cardView.findViewById(R.id.title_text)).setTextSize(20);
+        cardView.setContentText(video.currentProg);
+        ((TextView) cardView.findViewById(R.id.content_text)).setTextSize(19);
+
         if (video.cardImageUrl != null) {
             // Set card size from dimension resources.
             Resources res = cardView.getResources();

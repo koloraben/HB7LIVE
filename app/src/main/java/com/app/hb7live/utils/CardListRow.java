@@ -1,15 +1,14 @@
 
 package com.app.hb7live.utils;
 
-import android.support.v17.leanback.widget.HeaderItem;
-import android.support.v17.leanback.widget.ListRow;
-import android.support.v17.leanback.widget.ObjectAdapter;
+
+import androidx.leanback.widget.HeaderItem;
+import androidx.leanback.widget.ListRow;
+import androidx.leanback.widget.ObjectAdapter;
 
 import com.app.hb7live.models.CardRow;
 
 /**
- * The {@link CardListRow} allows the {@link ShadowRowPresenterSelector} to access the {@link CardRow}
- * held by the row and determine whether to use a {@link android.support.v17.leanback.widget.Presenter}
  * with or without a shadow.
  */
 public class CardListRow extends ListRow {

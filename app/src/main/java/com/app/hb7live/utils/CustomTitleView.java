@@ -16,17 +16,17 @@ package com.app.hb7live.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v17.leanback.widget.TitleViewAdapter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.leanback.widget.TitleViewAdapter;
+
 import com.app.hb7live.R;
 
 /**
- * Custom title view to be used in {@link android.support.v17.leanback.app.BrowseFragment}.
  */
 public class CustomTitleView extends RelativeLayout implements TitleViewAdapter.Provider {
     private final TextView mTitleView;

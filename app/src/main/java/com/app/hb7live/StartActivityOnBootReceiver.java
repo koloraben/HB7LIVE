@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v17.leanback.widget.ImageCardView;
-import android.support.v4.app.ActivityOptionsCompat;
 
 import com.app.hb7live.live.DetailViewActivity;
 import com.app.hb7live.playback.PlaybackActivity;

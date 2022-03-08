@@ -1,6 +1,7 @@
 
 package com.app.hb7live.utils;
 
+import android.app.Dialog;
 import android.app.IntentService;
 import android.app.Service;
 import android.content.ContentValues;
@@ -19,13 +20,17 @@ import com.app.hb7live.playback.VideoDbHelper;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.IntentService;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.util.Log;
+import android.view.WindowManager;
 
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.json.JSONException;
 
@@ -37,30 +42,31 @@ import java.util.List;
  * results into a local SQLite database.
  */
 public class FetchVideoService extends IntentService {
-  private static final String TAG = "FetchVideoService";
+    private static final String TAG = "FetchVideoService";
 
-  /**
-   * Creates an IntentService with a default name for the worker thread.
-   */
-  public FetchVideoService() {
-    super(TAG);
-  }
-
-  @Override
-  protected void onHandleIntent(Intent workIntent) {
-    VideoDbBuilder builder = new VideoDbBuilder(getApplicationContext());
-
-    try {
-      List<ContentValues> contentValuesList =
-              builder.fetch(getResources().getString(R.string.catalog_url));
-      ContentValues[] downloadedVideoContentValues =
-              contentValuesList.toArray(new ContentValues[contentValuesList.size()]);
-      getApplicationContext().getContentResolver().bulkInsert(VideoContract.VideoEntry.CONTENT_URI,
-              downloadedVideoContentValues);
-      Log.i(TAG, "done downloading videos");
-    } catch (IOException | JSONException e) {
-      Log.e(TAG, "Error occurred in downloading videos");
-      e.printStackTrace();
+    /**
+     * Creates an IntentService with a default name for the worker thread.
+     */
+    public FetchVideoService() {
+        super(TAG);
     }
-  }
+
+    @Override
+    protected void onHandleIntent(Intent workIntent) {
+        VideoDbBuilder builder = new VideoDbBuilder(getApplicationContext());
+        List<ContentValues> contentValuesList = new ArrayList<>();
+        ContentValues[] downloadedVideoContentValues = null;
+        try {
+            contentValuesList = builder.fetch(getResources().getString(R.string.catalog_url));
+
+            Log.i(TAG, "done downloading videos");
+        } catch (IOException | JSONException e) {
+            Log.e(TAG, "Error occurred in downloading videos");
+            e.printStackTrace();
+        }finally {
+          downloadedVideoContentValues = contentValuesList.toArray(new ContentValues[contentValuesList.size()]);
+          getApplicationContext().getContentResolver().bulkInsert(VideoContract.VideoEntry.CONTENT_URI,
+                  downloadedVideoContentValues);
+        }
+    }
 }
